@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,34 +8,30 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
-
     header { background: #1c3a5e; color: white; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
     header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; }
     header p { font-size: 0.85rem; opacity: 0.7; margin-top: 2px; }
     .header-left { display: flex; flex-direction: column; }
-
-    .stats-bar { background: white; border-bottom: 1px solid #e8e6e0; padding: 12px 32px; display: flex; gap: 24px; align-items: center; }
-    .stat { font-size: 0.85rem; color: #666; }
-    .stat strong { color: #1a1a1a; font-weight: 600; }
-    .stat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .stats-bar { background: white; padding: 12px 32px; display: flex; gap: 24px; border-bottom: 1px solid #e8e5df; }
+    .stat { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; color: #555; }
+    .stat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
     .dot-pending { background: #f59e0b; }
     .dot-approved { background: #10b981; }
     .dot-ignored { background: #9ca3af; }
-
-    .filter-bar { padding: 16px 32px; display: flex; gap: 8px; align-items: center; }
-    .filter-btn { padding: 6px 16px; border-radius: 20px; border: 1.5px solid #d1cfc8; background: white; cursor: pointer; font-size: 0.85rem; color: #555; transition: all 0.15s; }
-    .filter-btn:hover { border-color: #1c3a5e; color: #1c3a5e; }
-    .filter-btn.active { background: #1c3a5e; border-color: #1c3a5e; color: white; }
-
-    .cards { padding: 0 32px 48px; display: flex; flex-direction: column; gap: 20px; max-width: 900px; }
-
+    .controls { padding: 20px 32px 0; display: flex; align-items: center; justify-content: space-between; }
+    .filter-bar { display: flex; gap: 6px; }
+    .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid #d1cfc8; background: white; font-size: 0.85rem; cursor: pointer; color: #555; transition: all 0.15s; font-family: inherit; }
+    .filter-btn.active, .filter-btn:hover { background: #1c3a5e; color: white; border-color: #1c3a5e; }
+    .cards { padding: 20px 32px 40px; display: flex; flex-direction: column; gap: 16px; }
+    .loading { display: flex; align-items: center; gap: 12px; color: #999; padding: 40px; justify-content: center; }
+    .spinner { width: 20px; height: 20px; border: 2px solid #e8e5df; border-top-color: #1c3a5e; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; transition: box-shadow 0.2s; }
     .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
     .card.status-approved { border-left: 4px solid #10b981; }
     .card.status-pending { border-left: 4px solid #f59e0b; }
     .card.status-ignored { border-left: 4px solid #9ca3af; opacity: 0.6; }
     .card.status-edited { border-left: 4px solid #3b82f6; }
-
     .card-header { padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0ede8; }
     .card-meta { display: flex; align-items: center; gap: 10px; }
     .status-badge { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -44,9 +40,7 @@
     .badge-ignored { background: #f3f4f6; color: #6b7280; }
     .badge-edited { background: #dbeafe; color: #1e40af; }
     .category-badge { font-size: 0.75rem; color: #777; background: #f5f4f0; padding: 3px 10px; border-radius: 20px; }
-
     .card-body { display: grid; grid-template-columns: 280px 1fr; gap: 0; }
-
     .photo-side { padding: 16px; border-right: 1px solid #f0ede8; }
     .photo-area { width: 100%; aspect-ratio: 8/5; border-radius: 8px; overflow: hidden; position: relative; background: #f5f4f0; border: 2px dashed #d1cfc8; cursor: pointer; transition: border-color 0.2s; }
     .photo-area:hover { border-color: #1c3a5e; }
@@ -59,23 +53,19 @@
     .photo-btn { font-size: 0.75rem; padding: 5px 12px; border-radius: 6px; border: 1.5px solid #d1cfc8; background: white; cursor: pointer; color: #555; transition: all 0.15s; flex: 1; text-align: center; }
     .photo-btn:hover { border-color: #1c3a5e; color: #1c3a5e; }
     .uploading-indicator { font-size: 0.75rem; color: #1c3a5e; margin-top: 6px; display: none; text-align: center; }
-
     .fields-side { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
-
     .field-group { display: flex; flex-direction: column; gap: 4px; }
     .field-label { font-size: 0.72rem; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.06em; }
-    .field-input { font-size: 0.9rem; padding: 8px 10px; border: 1.5px solid transparent; border-radius: 6px; background: #fafafa; color: #1a1a1a; font-family: inherit; transition: all 0.15s; resize: vertical; width: 100%; }
-    .field-input:hover { border-color: #d1cfc8; background: white; }
+    .field-input { font-size: 0.9rem; padding: 8px 10px; border: 1.5px solid #e2dfd9; border-radius: 6px; background: #fefefe; color: #1a1a1a; font-family: inherit; transition: all 0.15s; resize: vertical; width: 100%; }
+    .field-input:hover { border-color: #b0aaa0; background: white; }
     .field-input:focus { outline: none; border-color: #1c3a5e; background: white; box-shadow: 0 0 0 3px rgba(28,58,94,0.08); }
     select.field-input { cursor: pointer; }
     textarea.field-input { min-height: 72px; line-height: 1.5; }
     .social-caption textarea { min-height: 56px; font-size: 0.85rem; }
-
-    .save-indicator { font-size: 0.72rem; color: #10b981; opacity: 0; transition: opacity 0.3s; margin-top: 2px; }
+    .save-indicator { font-size: 0.75rem; font-weight: 600; color: #059669; opacity: 0; transition: opacity 0.3s; background: #ecfdf5; padding: 3px 10px; border-radius: 4px; display: inline-block; }
     .save-indicator.visible { opacity: 1; }
-
-    .card-actions { padding: 12px 20px 16px; display: flex; gap: 8px; border-top: 1px solid #f0ede8; }
-    .btn { padding: 8px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+    .card-actions { padding: 12px 20px 16px; display: flex; gap: 8px; align-items: center; border-top: 1px solid #f0ede8; }
+    .btn { padding: 8px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
     .btn-approve { background: #10b981; color: white; }
     .btn-approve:hover { background: #059669; }
     .btn-ignore { background: #f3f4f6; color: #6b7280; }
@@ -83,112 +73,111 @@
     .btn-approved { background: #d1fae5; color: #065f46; cursor: default; }
     .btn-undo { background: #f3f4f6; color: #374151; font-weight: 500; font-size: 0.8rem; padding: 8px 14px; }
     .btn-undo:hover { background: #e5e7eb; }
-
-    .empty-state { padding: 60px 32px; text-align: center; color: #999; }
-    .empty-state h2 { font-size: 1.1rem; color: #555; margin-bottom: 8px; }
-
-    .loading { padding: 60px 32px; text-align: center; color: #999; }
-    .spinner { width: 32px; height: 32px; border: 3px solid #e8e6e0; border-top-color: #1c3a5e; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
+    .btn-ai { background: #7c3aed; color: white; font-size: 0.82rem; padding: 8px 16px; margin-left: auto; }
+    .btn-ai:hover { background: #6d28d9; }
+    .ai-panel { display: none; border-top: 2px solid #ede9fe; padding: 16px 20px; background: #faf8ff; }
+    .ai-panel.open { display: block; }
+    .ai-panel-title { font-size: 0.82rem; font-weight: 700; color: #7c3aed; margin-bottom: 10px; }
+    .ai-instruction { width: 100%; padding: 8px 10px; border: 1.5px solid #ddd6fe; border-radius: 6px; font-size: 0.875rem; font-family: inherit; resize: vertical; min-height: 58px; background: white; color: #1a1a1a; }
+    .ai-instruction:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.08); }
+    .ai-controls { display: flex; gap: 8px; margin-top: 8px; }
+    .btn-generate { padding: 7px 18px; border-radius: 7px; border: none; background: #7c3aed; color: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+    .btn-generate:hover { background: #6d28d9; }
+    .btn-generate:disabled { background: #c4b5fd; cursor: default; }
+    .btn-dismiss { padding: 7px 14px; border-radius: 7px; border: 1.5px solid #ddd6fe; background: white; color: #7c3aed; font-size: 0.85rem; cursor: pointer; font-family: inherit; }
+    .btn-dismiss:hover { background: #ede9fe; }
+    .ai-result { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .ai-suggestion { background: white; border: 1.5px solid #ddd6fe; border-radius: 8px; padding: 12px 14px; }
+    .ai-suggestion-label { font-size: 0.7rem; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+    .ai-suggestion-text { font-size: 0.875rem; color: #1a1a1a; line-height: 1.55; margin-bottom: 8px; }
+    .btn-apply { font-size: 0.78rem; padding: 4px 14px; border-radius: 5px; border: none; background: #7c3aed; color: white; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+    .btn-apply:hover { background: #6d28d9; }
+    .btn-apply:disabled { background: #c4b5fd; cursor: default; }
     .toast { position: fixed; bottom: 24px; right: 24px; background: #1c3a5e; color: white; padding: 12px 20px; border-radius: 8px; font-size: 0.875rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: translateY(80px); opacity: 0; transition: all 0.3s; z-index: 100; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.error { background: #dc2626; }
   </style>
 </head>
 <body>
-
-<header>
-  <div class="header-left">
-    <h1>🏘️ Wheaton Insider</h1>
-    <p>Weekly Article Review — Bons Realty</p>
+  <header>
+    <div class="header-left">
+      <h1>🏘️ Wheaton Insider</h1>
+      <p>Weekly Article Review — Bons Realty</p>
+    </div>
+    <div id="week-label" style="font-size:0.85rem;opacity:0.7;"></div>
+  </header>
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-dot dot-pending"></span>Pending: <strong id="count-pending">—</strong></div>
+    <div class="stat"><span class="stat-dot dot-approved"></span>Approved: <strong id="count-approved">—</strong></div>
+    <div class="stat"><span class="stat-dot dot-ignored"></span>Ignored: <strong id="count-ignored">—</strong></div>
   </div>
-  <div id="week-label" style="font-size:0.85rem;opacity:0.7;"></div>
-</header>
+  <div class="controls">
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="pending">Pending</button>
+      <button class="filter-btn" data-filter="approved">Approved</button>
+      <button class="filter-btn" data-filter="ignored">Ignored</button>
+    </div>
+  </div>
+  <div class="cards" id="cards-container">
+    <div class="loading"><div class="spinner"></div>Loading proposals...</div>
+  </div>
+  <div class="toast" id="toast"></div>
 
-<div class="stats-bar">
-  <div class="stat"><span class="stat-dot dot-pending"></span>Pending: <strong id="count-pending">—</strong></div>
-  <div class="stat"><span class="stat-dot dot-approved"></span>Approved: <strong id="count-approved">—</strong></div>
-  <div class="stat"><span class="stat-dot dot-ignored"></span>Ignored: <strong id="count-ignored">—</strong></div>
-</div>
+  <script>
+    const SUPABASE_URL = 'https://irdffyqpkgivxqspvgoa.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZGZmeXFwa2dpdnhxc3B2Z29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNzk0NTcsImV4cCI6MjA5MTc1NTQ1N30.JNktSYCQXddhs33FJ8Cn8BHh4pTX1NJ4TXFJYYTANu4';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const CATEGORIES = ['restaurant','business','development','community','real_estate'];
+    const CATEGORY_LABELS = { restaurant: 'Restaurants & Food', business: 'Local Business', development: 'Development', community: 'Community & Events', real_estate: 'Real Estate' };
 
-<div class="filter-bar">
-  <button class="filter-btn active" data-filter="all">All</button>
-  <button class="filter-btn" data-filter="pending">Pending</button>
-  <button class="filter-btn" data-filter="approved">Approved</button>
-  <button class="filter-btn" data-filter="ignored">Ignored</button>
-</div>
+    let proposals = [];
+    let activeFilter = 'all';
+    const aiSuggestions = {};
 
-<div class="cards" id="cards-container">
-  <div class="loading"><div class="spinner"></div>Loading proposals...</div>
-</div>
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderCards();
+      });
+    });
 
-<div class="toast" id="toast"></div>
+    async function loadProposals() {
+      const { data, error } = await sb
+        .from('wheaton_insider_proposals')
+        .select('*')
+        .in('status', ['pending','approved','edited','ignored'])
+        .is('website_published_at', null)
+        .order('category')
+        .order('headline');
+      if (error) { showToast('Error loading proposals: ' + error.message, true); return; }
+      proposals = data || [];
+      updateStats();
+      renderCards();
+      updateWeekLabel();
+    }
 
-<script>
-const SUPABASE_URL = 'https://irdffyqpkgivxqspvgoa.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZGZmeXFwa2dpdnhxc3B2Z29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNzk0NTcsImV4cCI6MjA5MTc1NTQ1N30.JNktSYCQXddhs33FJ8Cn8BHh4pTX1NJ4TXFJYYTANu4';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    function renderCards() {
+      const container = document.getElementById('cards-container');
+      const filtered = activeFilter === 'all' ? proposals :
+        activeFilter === 'approved' ? proposals.filter(p => p.status === 'approved' || p.status === 'edited') :
+        proposals.filter(p => p.status === activeFilter);
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="loading">No articles found.</div>';
+        return;
+      }
+      container.innerHTML = filtered.map(renderCard).join('');
+      attachCardListeners();
+    }
 
-const CATEGORIES = ['restaurant','business','development','community','real_estate'];
-const CATEGORY_LABELS = { restaurant:'🍽️ Restaurant', business:'🏪 Business', development:'🏗️ Development', community:'🏘️ Community', real_estate:'🏠 Real Estate' };
-
-let proposals = [];
-let activeFilter = 'all';
-
-async function loadProposals() {
-  const { data, error } = await sb
-    .from('wheaton_insider_proposals')
-    .select('*')
-    .in('status', ['pending','approved','edited','ignored'])
-    .is('website_published_at', null)
-    .order('category')
-    .order('headline');
-
-  if (error) { showToast('Error loading proposals: ' + error.message, true); return; }
-  proposals = data || [];
-  updateStats();
-  renderCards();
-  updateWeekLabel();
-}
-
-function updateWeekLabel() {
-  const el = document.getElementById('week-label');
-  if (proposals.length > 0 && proposals[0].week_date) {
-    const d = new Date(proposals[0].week_date);
-    el.textContent = 'Week of ' + d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
-  }
-}
-
-function updateStats() {
-  document.getElementById('count-pending').textContent = proposals.filter(p => p.status === 'pending').length;
-  document.getElementById('count-approved').textContent = proposals.filter(p => p.status === 'approved' || p.status === 'edited').length;
-  document.getElementById('count-ignored').textContent = proposals.filter(p => p.status === 'ignored').length;
-}
-
-function renderCards() {
-  const container = document.getElementById('cards-container');
-  const filtered = activeFilter === 'all' ? proposals :
-    activeFilter === 'approved' ? proposals.filter(p => p.status === 'approved' || p.status === 'edited') :
-    proposals.filter(p => p.status === activeFilter);
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty-state"><h2>No articles here</h2><p>Try a different filter.</p></div>';
-    return;
-  }
-
-  container.innerHTML = filtered.map(p => renderCard(p)).join('');
-  attachCardListeners();
-}
-
-function renderCard(p) {
-  const statusClass = p.status === 'edited' ? 'approved' : p.status;
-  const badgeClass = p.status === 'edited' ? 'badge-edited' : `badge-${p.status}`;
-  const badgeText = p.status === 'edited' ? 'Edited' : p.status.charAt(0).toUpperCase() + p.status.slice(1);
-  const isApproved = p.status === 'approved' || p.status === 'edited';
-
-  return `
-  <div class="card status-${statusClass}" data-id="${p.id}">
+    function renderCard(p) {
+      const isApproved = p.status === 'approved' || p.status === 'edited';
+      const badgeClass = `badge-${p.status}`;
+      const badgeText = p.status === 'edited' ? 'Edited' : p.status.charAt(0).toUpperCase() + p.status.slice(1);
+      return `
+  <div class="card status-${p.status}" data-id="${p.id}">
     <div class="card-header">
       <div class="card-meta">
         <span class="status-badge ${badgeClass}">${badgeText}</span>
@@ -199,7 +188,7 @@ function renderCard(p) {
       <div class="photo-side">
         <div class="photo-area ${p.photo_url ? 'has-photo' : ''}" onclick="document.getElementById('photo-input-${p.id}').click()">
           ${p.photo_url
-            ? `<img src="${p.photo_url}" alt="${p.headline}">`
+            ? `<img src="${p.photo_url}" alt="${escHtml(p.headline)}">`
             : `<div class="photo-placeholder">
                 <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
                 <span>Click to upload photo</span>
@@ -242,6 +231,15 @@ function renderCard(p) {
         <div id="save-indicator-${p.id}" class="save-indicator">✓ Saved</div>
       </div>
     </div>
+    <div class="ai-panel" id="ai-panel-${p.id}">
+      <div class="ai-panel-title">✨ Ask AI to improve this article</div>
+      <textarea class="ai-instruction" id="ai-instruction-${p.id}" placeholder="What would you like to improve? e.g. &quot;Make the Why It Matters more compelling for Wheaton homeowners&quot; or &quot;Sharpen the headline&quot; or &quot;Rewrite the summary to sound more conversational&quot;"></textarea>
+      <div class="ai-controls">
+        <button class="btn-generate" id="ai-btn-${p.id}" onclick="askAI('${p.id}')">✨ Generate</button>
+        <button class="btn-dismiss" onclick="toggleAI('${p.id}')">✕ Close</button>
+      </div>
+      <div class="ai-result" id="ai-result-${p.id}"></div>
+    </div>
     <div class="card-actions">
       ${isApproved
         ? `<button class="btn btn-approved" disabled>✓ Approved</button>
@@ -252,145 +250,220 @@ function renderCard(p) {
           : `<button class="btn btn-approve" onclick="setStatus('${p.id}', 'approved')">✓ Approve</button>
              <button class="btn btn-ignore" onclick="setStatus('${p.id}', 'ignored')">✕ Ignore</button>`
       }
+      <button class="btn btn-ai" onclick="toggleAI('${p.id}')">✨ AI</button>
     </div>
   </div>`;
-}
-
-function attachCardListeners() {
-  // Field auto-save on blur
-  document.querySelectorAll('.field-input').forEach(input => {
-    input.addEventListener('change', () => saveField(input.dataset.id, input.dataset.field, input.value));
-    if (input.tagName === 'TEXTAREA' || input.type === 'text') {
-      input.addEventListener('blur', () => saveField(input.dataset.id, input.dataset.field, input.value));
     }
-  });
 
-  // Photo upload
-  document.querySelectorAll('.photo-input').forEach(input => {
-    input.addEventListener('change', e => handlePhotoUpload(e.target.dataset.id, e.target.files[0]));
-  });
-}
-
-async function saveField(id, field, value) {
-  const p = proposals.find(x => x.id == id);
-  if (!p || p[field] === value) return;
-  p[field] = value;
-  const newStatus = (p.status === 'approved') ? 'edited' : p.status;
-  const { error } = await sb.from('wheaton_insider_proposals').update({ [field]: value, status: newStatus }).eq('id', id);
-  if (error) { showToast('Save failed', true); return; }
-  p.status = newStatus;
-  showSaveIndicator(id);
-  updateStats();
-}
-
-function showSaveIndicator(id) {
-  const el = document.getElementById(`save-indicator-${id}`);
-  if (!el) return;
-  el.classList.add('visible');
-  setTimeout(() => el.classList.remove('visible'), 2000);
-}
-
-async function setStatus(id, status) {
-  const { error } = await sb.from('wheaton_insider_proposals').update({ status }).eq('id', id);
-  if (error) { showToast('Error: ' + error.message, true); return; }
-  const p = proposals.find(x => x.id == id);
-  if (p) p.status = status;
-  updateStats();
-  renderCards();
-  showToast(status === 'approved' ? '✓ Approved' : status === 'ignored' ? 'Ignored' : 'Restored to pending');
-}
-
-async function handlePhotoUpload(id, file) {
-  if (!file) return;
-  const ind = document.getElementById(`uploading-${id}`);
-  if (ind) ind.style.display = 'block';
-
-  try {
-    const blob = await resizeAndCropImage(file);
-    const filename = `${id}-${Date.now()}.jpg`;
-    const { error: upErr } = await sb.storage.from('wheaton-insider-photos').upload(filename, blob, { contentType: 'image/jpeg', upsert: true });
-    if (upErr) throw upErr;
-
-    const { data } = sb.storage.from('wheaton-insider-photos').getPublicUrl(filename);
-    const photoUrl = data.publicUrl;
-
-    const { error: dbErr } = await sb.from('wheaton_insider_proposals').update({ photo_url: photoUrl }).eq('id', id);
-    if (dbErr) throw dbErr;
-
-    const p = proposals.find(x => x.id == id);
-    if (p) p.photo_url = photoUrl;
-    showToast('📷 Photo uploaded');
-    renderCards();
-  } catch (err) {
-    showToast('Upload failed: ' + err.message, true);
-  } finally {
-    if (ind) ind.style.display = 'none';
-  }
-}
-
-async function removePhoto(id) {
-  const { error } = await sb.from('wheaton_insider_proposals').update({ photo_url: null }).eq('id', id);
-  if (error) { showToast('Error removing photo', true); return; }
-  const p = proposals.find(x => x.id == id);
-  if (p) p.photo_url = null;
-  renderCards();
-  showToast('Photo removed');
-}
-
-function resizeAndCropImage(file) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const reader = new FileReader();
-    reader.onload = e => {
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1200;
-        canvas.height = 750;
-        const ctx = canvas.getContext('2d');
-        const targetRatio = 1200 / 750;
-        const srcRatio = img.width / img.height;
-        let sx, sy, sw, sh;
-        if (srcRatio > targetRatio) {
-          sh = img.height; sw = sh * targetRatio;
-          sx = (img.width - sw) / 2; sy = 0;
-        } else {
-          sw = img.width; sh = sw / targetRatio;
-          sx = 0; sy = (img.height - sh) / 2;
+    function attachCardListeners() {
+      document.querySelectorAll('.field-input').forEach(input => {
+        input.addEventListener('change', () => saveField(input.dataset.id, input.dataset.field, input.value));
+        if (input.tagName === 'TEXTAREA' || input.type === 'text') {
+          input.addEventListener('blur', () => saveField(input.dataset.id, input.dataset.field, input.value));
         }
-        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, 1200, 750);
-        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Conversion failed')), 'image/jpeg', 0.85);
-      };
-      img.onerror = reject;
-      img.src = e.target.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+      });
+      document.querySelectorAll('.photo-input').forEach(input => {
+        input.addEventListener('change', e => handlePhotoUpload(e.target.dataset.id, e.target.files[0]));
+      });
+    }
 
-function showToast(msg, isError = false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (isError ? ' error' : '');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+    async function saveField(id, field, value) {
+      const p = proposals.find(x => x.id == id);
+      if (!p || p[field] === value) return;
+      p[field] = value;
+      const newStatus = (p.status === 'approved') ? 'edited' : p.status;
+      const { error } = await sb.from('wheaton_insider_proposals').update({ [field]: value, status: newStatus }).eq('id', id);
+      if (error) { showToast('Save failed', true); return; }
+      p.status = newStatus;
+      showSaveIndicator(id);
+      updateStats();
+    }
 
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+    function showSaveIndicator(id) {
+      const el = document.getElementById(`save-indicator-${id}`);
+      if (!el) return;
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 2000);
+    }
 
-// Filter buttons
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeFilter = btn.dataset.filter;
-    renderCards();
-  });
-});
+    async function setStatus(id, status) {
+      const { error } = await sb.from('wheaton_insider_proposals').update({ status }).eq('id', id);
+      if (error) { showToast('Error: ' + error.message, true); return; }
+      const p = proposals.find(x => x.id == id);
+      if (p) p.status = status;
+      updateStats();
+      renderCards();
+      showToast(status === 'approved' ? '✓ Approved' : status === 'ignored' ? 'Ignored' : 'Restored to pending');
+    }
 
-loadProposals();
-</script>
+    async function handlePhotoUpload(id, file) {
+      if (!file) return;
+      const ind = document.getElementById(`uploading-${id}`);
+      if (ind) ind.style.display = 'block';
+      try {
+        const blob = await resizeAndCropImage(file);
+        const filename = `${id}-${Date.now()}.jpg`;
+        const { error: upErr } = await sb.storage.from('wheaton-insider-photos').upload(filename, blob, { contentType: 'image/jpeg', upsert: true });
+        if (upErr) throw upErr;
+        const { data: urlData } = sb.storage.from('wheaton-insider-photos').getPublicUrl(filename);
+        const photoUrl = urlData.publicUrl;
+        const { error: dbErr } = await sb.from('wheaton_insider_proposals').update({ photo_url: photoUrl }).eq('id', id);
+        if (dbErr) throw dbErr;
+        const p = proposals.find(x => x.id == id);
+        if (p) p.photo_url = photoUrl;
+        renderCards();
+        showToast('📷 Photo uploaded!');
+      } catch (err) {
+        showToast('Upload failed: ' + err.message, true);
+      } finally {
+        if (ind) ind.style.display = 'none';
+      }
+    }
+
+    function resizeAndCropImage(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+        reader.onload = e => {
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200; canvas.height = 750;
+            const ctx = canvas.getContext('2d');
+            const targetRatio = 1200 / 750;
+            const srcRatio = img.width / img.height;
+            let sx, sy, sw, sh;
+            if (srcRatio > targetRatio) {
+              sh = img.height; sw = sh * targetRatio; sx = (img.width - sw) / 2; sy = 0;
+            } else {
+              sw = img.width; sh = sw / targetRatio; sx = 0; sy = (img.height - sh) / 2;
+            }
+            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, 1200, 750);
+            canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Conversion failed')), 'image/jpeg', 0.85);
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function removePhoto(id) {
+      const { error } = await sb.from('wheaton_insider_proposals').update({ photo_url: null }).eq('id', id);
+      if (error) { showToast('Error removing photo', true); return; }
+      const p = proposals.find(x => x.id == id);
+      if (p) p.photo_url = null;
+      renderCards();
+      showToast('Photo removed');
+    }
+
+    function updateStats() {
+      document.getElementById('count-pending').textContent = proposals.filter(p => p.status === 'pending').length;
+      document.getElementById('count-approved').textContent = proposals.filter(p => p.status === 'approved' || p.status === 'edited').length;
+      document.getElementById('count-ignored').textContent = proposals.filter(p => p.status === 'ignored').length;
+    }
+
+    function updateWeekLabel() {
+      const el = document.getElementById('week-label');
+      if (proposals.length > 0 && proposals[0].week_date) {
+        const d = new Date(proposals[0].week_date);
+        el.textContent = 'Week of ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      }
+    }
+
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast' + (isError ? ' error' : '');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── AI improve feature ───────────────────────────────────────────────────
+
+    function toggleAI(id) {
+      const panel = document.getElementById(`ai-panel-${id}`);
+      if (!panel) return;
+      const isOpen = panel.classList.toggle('open');
+      if (!isOpen) {
+        document.getElementById(`ai-result-${id}`).innerHTML = '';
+        document.getElementById(`ai-instruction-${id}`).value = '';
+      }
+    }
+
+    async function askAI(id) {
+      const p = proposals.find(x => x.id == id);
+      if (!p) return;
+      const instruction = document.getElementById(`ai-instruction-${id}`).value.trim();
+      if (!instruction) { showToast('Type an instruction first', true); return; }
+
+      const btn = document.getElementById(`ai-btn-${id}`);
+      const resultDiv = document.getElementById(`ai-result-${id}`);
+      btn.disabled = true;
+      btn.textContent = '⏳ Thinking...';
+      resultDiv.innerHTML = '';
+
+      try {
+        const { data, error } = await sb.functions.invoke('improve-article', {
+          body: {
+            article: {
+              headline: p.headline || '',
+              summary: p.summary || '',
+              why_it_matters: p.why_it_matters || '',
+              social_caption: p.social_caption || '',
+              category: p.category
+            },
+            instruction
+          }
+        });
+        if (error) throw error;
+
+        const fields = [
+          { key: 'headline', label: 'Headline' },
+          { key: 'summary', label: 'Summary' },
+          { key: 'why_it_matters', label: 'Why It Matters' },
+          { key: 'social_caption', label: 'Social Caption' }
+        ];
+        const changed = fields.filter(f => data[f.key] && data[f.key] !== p[f.key]);
+        if (changed.length === 0) {
+          resultDiv.innerHTML = '<div style="color:#6b7280;font-size:0.85rem;padding:4px 0;">No changes suggested — looks good as-is!</div>';
+        } else {
+          aiSuggestions[id] = data;
+          resultDiv.innerHTML = changed.map(f => `
+            <div class="ai-suggestion">
+              <div class="ai-suggestion-label">${f.label}</div>
+              <div class="ai-suggestion-text">${escHtml(data[f.key])}</div>
+              <button class="btn-apply" id="ai-apply-${id}-${f.key}" onclick="applyAISuggestion('${id}', '${f.key}')">Apply</button>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        const msg = String(err.message || '');
+        if (msg.includes('404') || msg.includes('not found') || msg.includes('Edge Function')) {
+          resultDiv.innerHTML = '<div style="color:#d97706;font-size:0.85rem;padding:4px 0;">⚠️ AI feature not yet active — Anthropic API key needs to be added to Supabase to enable this.</div>';
+        } else {
+          resultDiv.innerHTML = `<div style="color:#dc2626;font-size:0.85rem;padding:4px 0;">Error: ${escHtml(msg || 'Something went wrong')}</div>`;
+        }
+      }
+      btn.disabled = false;
+      btn.textContent = '✨ Generate';
+    }
+
+    function applyAISuggestion(id, field) {
+      const suggestion = aiSuggestions[id];
+      if (!suggestion || !suggestion[field]) return;
+      const value = suggestion[field];
+      const input = document.querySelector(`.field-input[data-id="${id}"][data-field="${field}"]`);
+      if (input) { input.value = value; saveField(id, field, value); }
+      const applyBtn = document.getElementById(`ai-apply-${id}-${field}`);
+      if (applyBtn) { applyBtn.textContent = '✓ Applied'; applyBtn.disabled = true; }
+    }
+
+    loadProposals();
+  </script>
 </body>
 </html>
