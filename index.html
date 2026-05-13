@@ -96,6 +96,25 @@
     .toast { position: fixed; bottom: 24px; right: 24px; background: #1c3a5e; color: white; padding: 12px 20px; border-radius: 8px; font-size: 0.875rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: translateY(80px); opacity: 0; transition: all 0.3s; z-index: 100; }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.error { background: #dc2626; }
+    .tip-panel { margin: 16px 32px 0; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; border-left: 4px solid #f59e0b; }
+    .tip-panel-header { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+    .tip-panel-header:hover { background: #fffbeb; }
+    .tip-panel-title { font-size: 0.95rem; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 8px; }
+    .tip-panel-hint { font-size: 0.8rem; color: #aaa; font-weight: 400; margin-left: 4px; }
+    .tip-chevron { font-size: 0.75rem; color: #aaa; transition: transform 0.2s; }
+    .tip-chevron.open { transform: rotate(180deg); }
+    .tip-body { padding: 0 20px 16px; display: none; }
+    .tip-body.open { display: block; }
+    .tip-hint { font-size: 0.82rem; color: #888; margin-bottom: 10px; line-height: 1.5; }
+    .tip-input { width: 100%; padding: 10px 12px; border: 1.5px solid #e2dfd9; border-radius: 8px; font-size: 0.9rem; font-family: inherit; resize: vertical; min-height: 72px; background: #fefefe; color: #1a1a1a; transition: border-color 0.15s; }
+    .tip-input:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.1); }
+    .tip-controls { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
+    .tip-cat-select { padding: 8px 12px; border: 1.5px solid #e2dfd9; border-radius: 7px; font-size: 0.85rem; font-family: inherit; background: white; color: #555; cursor: pointer; flex: 1; max-width: 220px; }
+    .tip-cat-select:focus { outline: none; border-color: #f59e0b; }
+    .btn-submit-tip { padding: 9px 22px; border-radius: 8px; border: none; background: #f59e0b; color: white; font-size: 0.875rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.15s; white-space: nowrap; }
+    .btn-submit-tip:hover { background: #d97706; }
+    .btn-submit-tip:disabled { background: #fcd34d; cursor: default; }
+    .tip-badge { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: #fef3c7; color: #92400e; text-transform: uppercase; letter-spacing: 0.04em; }
   </style>
 </head>
 <body>
@@ -119,6 +138,29 @@
       <button class="filter-btn" data-filter="ignored">Ignored</button>
     </div>
   </div>
+
+  <div class="tip-panel" id="tip-panel">
+    <div class="tip-panel-header" onclick="toggleTipPanel()">
+      <div class="tip-panel-title">💡 Submit a Community Tip <span class="tip-panel-hint">— heard something? Add it to the queue</span></div>
+      <span class="tip-chevron open" id="tip-chevron">▼</span>
+    </div>
+    <div class="tip-body open" id="tip-body">
+      <p class="tip-hint">Heard about a new restaurant, a business closing, a development project, or anything worth covering? Drop it here — AI will research and write it up.</p>
+      <textarea id="tip-text" class="tip-input" placeholder="e.g. Wine bar opening in the old Blockbuster space on Main St" rows="3"></textarea>
+      <div class="tip-controls">
+        <select id="tip-category" class="tip-cat-select">
+          <option value="">Category (optional)</option>
+          <option value="restaurant">Restaurants &amp; Food</option>
+          <option value="business">Local Business</option>
+          <option value="development">Development</option>
+          <option value="community">Community &amp; Events</option>
+          <option value="real_estate">Real Estate</option>
+        </select>
+        <button class="btn-submit-tip" id="btn-submit-tip" onclick="submitTip()">Add to Queue →</button>
+      </div>
+    </div>
+  </div>
+
   <div class="cards" id="cards-container">
     <div class="loading"><div class="spinner"></div>Loading proposals...</div>
   </div>
@@ -182,6 +224,7 @@
       <div class="card-meta">
         <span class="status-badge ${badgeClass}">${badgeText}</span>
         <span class="category-badge">${CATEGORY_LABELS[p.category] || p.category}</span>
+        ${p.notes && p.notes.includes('Community tip') ? '<span class="tip-badge">💡 Tip</span>' : ''}
       </div>
     </div>
     <div class="card-body">
@@ -466,6 +509,53 @@
       if (input) { input.value = value; saveField(id, field, value); }
       const applyBtn = document.getElementById(`ai-apply-${id}-${field}`);
       if (applyBtn) { applyBtn.textContent = '✓ Applied'; applyBtn.disabled = true; }
+    }
+
+    // ── Tip submission ───────────────────────────────────────────────────────
+
+    function toggleTipPanel() {
+      const body = document.getElementById('tip-body');
+      const chevron = document.getElementById('tip-chevron');
+      body.classList.toggle('open');
+      chevron.classList.toggle('open');
+    }
+
+    async function submitTip() {
+      const text = document.getElementById('tip-text').value.trim();
+      if (!text) { showToast('Type your tip first', true); return; }
+      const category = document.getElementById('tip-category').value || 'community';
+      const btn = document.getElementById('btn-submit-tip');
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await sb.from('wheaton_insider_proposals').insert({
+        headline: text,
+        category,
+        status: 'pending',
+        week_date: today,
+        notes: 'Community tip — use AI to research and expand'
+      }).select().single();
+
+      btn.disabled = false;
+      btn.textContent = 'Add to Queue →';
+
+      if (error) { showToast('Error: ' + error.message, true); return; }
+
+      proposals.unshift(data);
+      document.getElementById('tip-text').value = '';
+      document.getElementById('tip-category').value = '';
+      updateStats();
+      renderCards();
+      showToast('💡 Tip added! Click ✨ AI to have it researched and written up.');
+
+      setTimeout(() => {
+        const card = document.querySelector(`.card[data-id="${data.id}"]`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        toggleAI(data.id);
+        const instr = document.getElementById(`ai-instruction-${data.id}`);
+        if (instr) instr.value = 'Research this tip and write a full article: headline, summary, why it matters for Wheaton homeowners, and a social caption.';
+      }, 150);
     }
 
     loadProposals();
