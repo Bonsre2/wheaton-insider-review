@@ -228,6 +228,11 @@
           <label class="field-label">Social Caption</label>
           <textarea class="field-input" data-field="social_caption" data-id="${p.id}" rows="2">${escHtml(p.social_caption || '')}</textarea>
         </div>
+        <div class="field-group">
+          <label class="field-label">Source URL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#bbb">(link to original article)</span></label>
+          <input type="url" class="field-input" data-field="source_url" data-id="${p.id}" value="${escHtml(p.source_url || '')}" placeholder="https://patch.com/illinois/wheaton/...">
+          ${p.source_url ? `<a href="${escHtml(p.source_url)}" target="_blank" rel="noopener" style="font-size:0.78rem;color:#1c3a5e;margin-top:3px;display:inline-block;">↗ Open source</a>` : ''}
+        </div>
         <div id="save-indicator-${p.id}" class="save-indicator">✓ Saved</div>
       </div>
     </div>
