@@ -18,6 +18,7 @@
     .dot-pending { background: #f59e0b; }
     .dot-approved { background: #10b981; }
     .dot-ignored { background: #9ca3af; }
+    .dot-denied { background: #dc2626; }
     .controls { padding: 20px 32px 0; display: flex; align-items: center; justify-content: space-between; }
     .filter-bar { display: flex; gap: 6px; }
     .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid #d1cfc8; background: white; font-size: 0.85rem; cursor: pointer; color: #555; transition: all 0.15s; font-family: inherit; }
@@ -32,6 +33,9 @@
     .card.status-pending { border-left: 4px solid #f59e0b; }
     .card.status-ignored { border-left: 4px solid #9ca3af; opacity: 0.6; }
     .card.status-edited { border-left: 4px solid #3b82f6; }
+    .card.status-denied { border-left: 4px solid #dc2626; opacity: 0.6; }
+    .card.status-denied .card-body { pointer-events: none; }
+    .card.status-denied .field-input { background: #f3f4f6; color: #6b7280; }
     .card-header { padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0ede8; }
     .card-meta { display: flex; align-items: center; gap: 10px; }
     .status-badge { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -39,6 +43,7 @@
     .badge-approved { background: #d1fae5; color: #065f46; }
     .badge-ignored { background: #f3f4f6; color: #6b7280; }
     .badge-edited { background: #dbeafe; color: #1e40af; }
+    .badge-denied { background: #fee2e2; color: #991b1b; }
     .category-badge { font-size: 0.75rem; color: #777; background: #f5f4f0; padding: 3px 10px; border-radius: 20px; }
     .card-body { display: grid; grid-template-columns: 280px 1fr; gap: 0; }
     .photo-side { padding: 16px; border-right: 1px solid #f0ede8; }
@@ -70,6 +75,8 @@
     .btn-approve:hover { background: #059669; }
     .btn-ignore { background: #f3f4f6; color: #6b7280; }
     .btn-ignore:hover { background: #e5e7eb; }
+    .btn-deny { background: #fee2e2; color: #991b1b; }
+    .btn-deny:hover { background: #fecaca; }
     .btn-approved { background: #d1fae5; color: #065f46; cursor: default; }
     .btn-undo { background: #f3f4f6; color: #374151; font-weight: 500; font-size: 0.8rem; padding: 8px 14px; }
     .btn-undo:hover { background: #e5e7eb; }
@@ -129,6 +136,7 @@
     <div class="stat"><span class="stat-dot dot-pending"></span>Pending: <strong id="count-pending">—</strong></div>
     <div class="stat"><span class="stat-dot dot-approved"></span>Approved: <strong id="count-approved">—</strong></div>
     <div class="stat"><span class="stat-dot dot-ignored"></span>Ignored: <strong id="count-ignored">—</strong></div>
+    <div class="stat"><span class="stat-dot dot-denied"></span>Denied: <strong id="count-denied">—</strong></div>
   </div>
   <div class="controls">
     <div class="filter-bar">
@@ -136,6 +144,7 @@
       <button class="filter-btn" data-filter="pending">Pending</button>
       <button class="filter-btn" data-filter="approved">Approved</button>
       <button class="filter-btn" data-filter="ignored">Ignored</button>
+      <button class="filter-btn" data-filter="denied">Denied</button>
     </div>
   </div>
 
@@ -190,7 +199,7 @@
       const { data, error } = await sb
         .from('wheaton_insider_proposals')
         .select('*')
-        .in('status', ['pending','approved','edited','ignored'])
+        .in('status', ['pending','approved','edited','ignored','denied'])
         .is('website_published_at', null)
         .order('category')
         .order('headline');
@@ -289,16 +298,21 @@
       <div class="ai-result" id="ai-result-${p.id}"></div>
     </div>
     <div class="card-actions">
-      ${isApproved
-        ? `<button class="btn btn-approved" disabled>✓ Approved</button>
-           <button class="btn btn-undo" onclick="setStatus('${p.id}', 'pending')">↩ Undo</button>`
-        : p.status === 'ignored'
-          ? `<button class="btn btn-approve" onclick="setStatus('${p.id}', 'approved')">✓ Approve</button>
-             <button class="btn btn-undo" onclick="setStatus('${p.id}', 'pending')">↩ Restore</button>`
-          : `<button class="btn btn-approve" onclick="setStatus('${p.id}', 'approved')">✓ Approve</button>
-             <button class="btn btn-ignore" onclick="setStatus('${p.id}', 'ignored')">✕ Ignore</button>`
+      ${p.status === 'denied'
+        ? `<button class="btn btn-undo" onclick="setStatus('${p.id}', 'pending')">↩ Undo</button>`
+        : isApproved
+          ? `<button class="btn btn-approved" disabled>✓ Approved</button>
+             <button class="btn btn-undo" onclick="setStatus('${p.id}', 'pending')">↩ Undo</button>
+             <button class="btn btn-deny" onclick="setStatus('${p.id}', 'denied')">⛔ Deny</button>`
+          : p.status === 'ignored'
+            ? `<button class="btn btn-approve" onclick="setStatus('${p.id}', 'approved')">✓ Approve</button>
+               <button class="btn btn-undo" onclick="setStatus('${p.id}', 'pending')">↩ Restore</button>
+               <button class="btn btn-deny" onclick="setStatus('${p.id}', 'denied')">⛔ Deny</button>`
+            : `<button class="btn btn-approve" onclick="setStatus('${p.id}', 'approved')">✓ Approve</button>
+               <button class="btn btn-ignore" onclick="setStatus('${p.id}', 'ignored')">✕ Ignore</button>
+               <button class="btn btn-deny" onclick="setStatus('${p.id}', 'denied')">⛔ Deny</button>`
       }
-      <button class="btn btn-ai" onclick="toggleAI('${p.id}')">✨ AI</button>
+      ${p.status !== 'denied' ? `<button class="btn btn-ai" onclick="toggleAI('${p.id}')">✨ AI</button>` : ''}
     </div>
   </div>`;
     }
@@ -341,7 +355,7 @@
       if (p) p.status = status;
       updateStats();
       renderCards();
-      showToast(status === 'approved' ? '✓ Approved' : status === 'ignored' ? 'Ignored' : 'Restored to pending');
+      showToast(status === 'approved' ? '✓ Approved' : status === 'ignored' ? 'Ignored' : status === 'denied' ? '⛔ Denied' : 'Restored to pending');
     }
 
     async function handlePhotoUpload(id, file) {
@@ -409,6 +423,7 @@
       document.getElementById('count-pending').textContent = proposals.filter(p => p.status === 'pending').length;
       document.getElementById('count-approved').textContent = proposals.filter(p => p.status === 'approved' || p.status === 'edited').length;
       document.getElementById('count-ignored').textContent = proposals.filter(p => p.status === 'ignored').length;
+      document.getElementById('count-denied').textContent = proposals.filter(p => p.status === 'denied').length;
     }
 
     function updateWeekLabel() {
