@@ -309,7 +309,6 @@
                <button class="btn btn-undo" onclick="setStatus('${p.id}', 'pending')">↩ Restore</button>
                <button class="btn btn-deny" onclick="setStatus('${p.id}', 'denied')">⛔ Deny</button>`
             : `<button class="btn btn-approve" onclick="setStatus('${p.id}', 'approved')">✓ Approve</button>
-               <button class="btn btn-ignore" onclick="setStatus('${p.id}', 'ignored')">✕ Ignore</button>
                <button class="btn btn-deny" onclick="setStatus('${p.id}', 'denied')">⛔ Deny</button>`
       }
       ${p.status !== 'denied' ? `<button class="btn btn-ai" onclick="toggleAI('${p.id}')">✨ AI</button>` : ''}
