@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wheaton Insider — Article Review</title>
+  <title>Western Suburban Insider — Article Review</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -127,7 +127,7 @@
 <body>
   <header>
     <div class="header-left">
-      <h1>🏘️ Wheaton Insider</h1>
+      <h1>🏘️ Western Suburban Insider</h1>
       <p>Weekly Article Review — Bons Realty</p>
     </div>
     <div id="week-label" style="font-size:0.85rem;opacity:0.7;"></div>
@@ -201,6 +201,7 @@
         .select('*')
         .in('status', ['pending','approved','edited','ignored','denied'])
         .is('website_published_at', null)
+        .order('town')
         .order('category')
         .order('headline');
       if (error) { showToast('Error loading proposals: ' + error.message, true); return; }
@@ -232,6 +233,7 @@
     <div class="card-header">
       <div class="card-meta">
         <span class="status-badge ${badgeClass}">${badgeText}</span>
+        <span class="category-badge" style="background:#1c3a5e;color:#fff">📍 ${p.town || 'Wheaton'}</span>
         <span class="category-badge">${CATEGORY_LABELS[p.category] || p.category}</span>
         ${p.notes && p.notes.includes('Community tip') ? '<span class="tip-badge">💡 Tip</span>' : ''}
       </div>
@@ -290,7 +292,7 @@
     </div>
     <div class="ai-panel" id="ai-panel-${p.id}">
       <div class="ai-panel-title">✨ Ask AI to improve this article</div>
-      <textarea class="ai-instruction" id="ai-instruction-${p.id}" placeholder="What would you like to improve? e.g. &quot;Make the Why It Matters more compelling for Wheaton homeowners&quot; or &quot;Sharpen the headline&quot; or &quot;Rewrite the summary to sound more conversational&quot;"></textarea>
+      <textarea class="ai-instruction" id="ai-instruction-${p.id}" placeholder="What would you like to improve? e.g. &quot;Make the Why It Matters more compelling for local homeowners&quot; or &quot;Sharpen the headline&quot; or &quot;Rewrite the summary to sound more conversational&quot;"></textarea>
       <div class="ai-controls">
         <button class="btn-generate" id="ai-btn-${p.id}" onclick="askAI('${p.id}')">✨ Generate</button>
         <button class="btn-dismiss" onclick="toggleAI('${p.id}')">✕ Close</button>
@@ -568,7 +570,7 @@
         if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
         toggleAI(data.id);
         const instr = document.getElementById(`ai-instruction-${data.id}`);
-        if (instr) instr.value = 'Research this tip and write a full article: headline, summary, why it matters for Wheaton homeowners, and a social caption.';
+        if (instr) instr.value = 'Research this tip and write a full article: headline, summary, why it matters for homeowners in that town, and a social caption.';
       }, 150);
     }
 
