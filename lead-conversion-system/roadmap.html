@@ -1,0 +1,359 @@
+<title>Lead Conversion System — Build Roadmap</title>
+<style>
+  :root {
+    --ground:#F4F5F2; --surface:#FFFFFF; --surface-2:#FBFAF7;
+    --ink:#17212C; --ink-soft:#374250; --muted:#68727F; --line:#E4E5E0;
+    --accent:#A96E22; --accent-soft:#F0E4CE;      /* GHL / brass */
+    --skill:#2C64A6; --skill-soft:#E0EAF4;         /* Claude Skills / blue */
+    --routine:#1C7452; --routine-soft:#DBEDE3;     /* Claude Routines / green */
+    --good:#1C7452; --warn:#B0762A;
+    --shadow:0 1px 2px rgba(23,33,44,.05), 0 8px 24px -14px rgba(23,33,44,.20);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SF Mono","JetBrains Mono",ui-monospace,"Cascadia Mono",Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:#0F141A; --surface:#161D26; --surface-2:#1A222C;
+      --ink:#EDF1F5; --ink-soft:#C3CBD4; --muted:#8894A1; --line:#28313B;
+      --accent:#D49A48; --accent-soft:#33291A;
+      --skill:#6BA6E2; --skill-soft:#1A2634; --routine:#4FBF93; --routine-soft:#15271F;
+      --good:#4FBF93; --warn:#D49A48;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground:#F4F5F2; --surface:#FFFFFF; --surface-2:#FBFAF7;
+    --ink:#17212C; --ink-soft:#374250; --muted:#68727F; --line:#E4E5E0;
+    --accent:#A96E22; --accent-soft:#F0E4CE; --skill:#2C64A6; --skill-soft:#E0EAF4;
+    --routine:#1C7452; --routine-soft:#DBEDE3; --good:#1C7452; --warn:#B0762A;
+    --shadow:0 1px 2px rgba(23,33,44,.05), 0 8px 24px -14px rgba(23,33,44,.20);
+  }
+  :root[data-theme="dark"] {
+    --ground:#0F141A; --surface:#161D26; --surface-2:#1A222C;
+    --ink:#EDF1F5; --ink-soft:#C3CBD4; --muted:#8894A1; --line:#28313B;
+    --accent:#D49A48; --accent-soft:#33291A; --skill:#6BA6E2; --skill-soft:#1A2634;
+    --routine:#4FBF93; --routine-soft:#15271F; --good:#4FBF93; --warn:#D49A48;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px -16px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:var(--sans); line-height:1.6;
+    -webkit-font-smoothing:antialiased; font-size:16px;
+  }
+  .wrap { max-width:1040px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px); }
+  h1,h2,h3 { text-wrap:balance; margin:0; }
+  .eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; }
+  a { color:var(--skill); }
+
+  /* ---- header ---- */
+  header { border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:44px; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:clamp(30px,5.2vw,50px); line-height:1.08; letter-spacing:-.01em; margin:14px 0 12px; }
+  .lede { color:var(--ink-soft); font-size:clamp(16px,2vw,19px); max-width:60ch; }
+  .source { color:var(--muted); font-size:13.5px; margin-top:16px; font-family:var(--mono); }
+
+  section { margin-bottom:52px; }
+  .sec-head { display:flex; align-items:baseline; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
+  .sec-head h2 { font-family:var(--serif); font-weight:600; font-size:clamp(21px,3vw,27px); letter-spacing:-.01em; }
+  .sec-head p { color:var(--muted); font-size:14.5px; margin:0; }
+
+  /* ---- thesis ---- */
+  .thesis { background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
+            border-radius:10px; padding:clamp(20px,3vw,30px); box-shadow:var(--shadow); }
+  .thesis blockquote { margin:0 0 22px; font-family:var(--serif); font-size:clamp(19px,2.6vw,25px); line-height:1.34; color:var(--ink); }
+  .thesis blockquote span { color:var(--accent); }
+  .ratios { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .ratio { background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:18px 20px; }
+  .ratio .lbl { font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+  .ratio .fig { display:flex; align-items:baseline; gap:10px; margin-top:10px; font-variant-numeric:tabular-nums; }
+  .ratio .from { font-family:var(--serif); font-size:30px; color:var(--muted); text-decoration:line-through; text-decoration-thickness:1.5px; }
+  .ratio .arrow { color:var(--accent); font-weight:700; }
+  .ratio .to { font-family:var(--serif); font-size:40px; font-weight:600; color:var(--good); line-height:1; }
+  .ratio .note { font-size:13px; color:var(--ink-soft); margin-top:8px; }
+
+  .bench { display:flex; flex-wrap:wrap; gap:10px 26px; margin-top:22px; padding-top:20px; border-top:1px dashed var(--line); }
+  .bench div { font-size:13.5px; color:var(--ink-soft); }
+  .bench b { font-family:var(--mono); font-size:15px; color:var(--ink); font-weight:600; }
+
+  /* ---- architecture lanes ---- */
+  .lanes { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .lane { background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--c); border-radius:10px; padding:20px; box-shadow:var(--shadow); }
+  .lane.ghl{--c:var(--accent);} .lane.skill{--c:var(--skill);} .lane.routine{--c:var(--routine);}
+  .lane h3 { font-size:16px; display:flex; align-items:center; gap:9px; }
+  .lane h3 .dot { width:9px; height:9px; border-radius:50%; background:var(--c); flex:none; }
+  .lane .role { font-size:12.5px; color:var(--muted); margin:4px 0 14px; text-transform:uppercase; letter-spacing:.05em; }
+  .lane ul { margin:0; padding-left:18px; color:var(--ink-soft); font-size:14px; }
+  .lane li { margin-bottom:6px; }
+
+  /* ---- roadmap timeline ---- */
+  .phases { position:relative; }
+  .phase { position:relative; display:grid; grid-template-columns:64px 1fr; gap:20px; padding-bottom:26px; }
+  .rail { position:relative; display:flex; justify-content:center; }
+  .rail::before { content:""; position:absolute; top:8px; bottom:-26px; width:2px; background:var(--line); }
+  .phase:last-child .rail::before { display:none; }
+  .node { width:48px; height:48px; border-radius:50%; background:var(--surface); border:2px solid var(--accent);
+          color:var(--accent); font-family:var(--serif); font-weight:600; font-size:21px; display:flex; align-items:center; justify-content:center; z-index:1; box-shadow:var(--shadow); }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:20px 22px; box-shadow:var(--shadow); }
+  .card .top { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:6px; }
+  .card h3 { font-size:18px; letter-spacing:-.01em; }
+  .card .when { font-family:var(--mono); font-size:12px; color:var(--muted); white-space:nowrap; }
+  .card .goal { color:var(--ink-soft); font-size:14.5px; margin:0 0 14px; }
+  .card .goal em { color:var(--accent); font-style:normal; font-weight:600; }
+  .rows { display:flex; flex-direction:column; gap:8px; }
+  .row { display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start; font-size:13.5px; }
+  .tag { font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.03em; text-transform:uppercase;
+         padding:3px 8px; border-radius:5px; text-align:center; align-self:start; }
+  .tag.ghl{ background:var(--accent-soft); color:var(--accent); }
+  .tag.skill{ background:var(--skill-soft); color:var(--skill); }
+  .tag.routine{ background:var(--routine-soft); color:var(--routine); }
+  .row .val { color:var(--ink-soft); }
+  .row .val code { font-family:var(--mono); font-size:12.5px; background:var(--surface-2); border:1px solid var(--line); padding:1px 6px; border-radius:4px; color:var(--ink); }
+
+  /* ---- catalog ---- */
+  .cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  .cat { background:var(--surface); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:var(--shadow); }
+  .cat > h3 { font-size:15px; padding:14px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:9px; }
+  .cat > h3 .dot { width:9px;height:9px;border-radius:50%;flex:none; }
+  .cat.skill h3 .dot{background:var(--skill);} .cat.routine h3 .dot{background:var(--routine);}
+  .cat table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .cat td { padding:9px 18px; border-top:1px solid var(--line); vertical-align:top; }
+  .cat tr:first-child td { border-top:none; }
+  .cat td code { font-family:var(--mono); font-size:12.5px; color:var(--ink); font-weight:600; }
+  .cat td.desc { color:var(--muted); }
+  .cat td.ph { text-align:right; font-family:var(--mono); font-size:11.5px; color:var(--accent); white-space:nowrap; }
+
+  /* ---- start ---- */
+  .start { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:clamp(20px,3vw,28px); box-shadow:var(--shadow); }
+  .start ol { margin:0; padding-left:22px; }
+  .start li { margin-bottom:12px; color:var(--ink-soft); font-size:15px; }
+  .start li b { color:var(--ink); }
+  footer { margin-top:48px; padding-top:22px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; font-family:var(--mono); }
+
+  @media (max-width:760px) {
+    .ratios,.lanes,.cat-grid { grid-template-columns:1fr; }
+    .phase { grid-template-columns:44px 1fr; gap:14px; }
+    .node { width:38px; height:38px; font-size:17px; }
+    .row { grid-template-columns:80px 1fr; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Implementation Roadmap · GoHighLevel × Claude</div>
+    <h1>Turning the lead-conversion masterclass into a running system</h1>
+    <p class="lede">Every idea from the Sherrard × Joshua Smith interview, mapped to what GoHighLevel runs, what Claude Skills generate, and what Claude Routines do on a schedule — sequenced so each stage ships value before the next begins.</p>
+    <p class="source">Source: "Increase your LEAD CONVERSION by 1600% with 1 simple change" · Mike Sherrard × Joshua Smith · ~53 min</p>
+  </header>
+
+  <section>
+    <div class="sec-head"><h2>The one simple change</h2><p>Fix conversion before you touch lead volume.</p></div>
+    <div class="thesis">
+      <blockquote>"Most agents don't have a lead-generation problem. They have a <span>lead-conversion</span> problem." Fixing two ratios took one agent to <span>2.7×</span> the business — with zero extra leads or hours.</blockquote>
+      <div class="ratios">
+        <div class="ratio">
+          <div class="lbl">Appointment set → show</div>
+          <div class="fig"><span class="from">50%</span><span class="arrow">→</span><span class="to">75%+</span></div>
+          <div class="note">Comfort · close date · proper confirmation · sell the value</div>
+        </div>
+        <div class="ratio">
+          <div class="lbl">Appointment → client signed</div>
+          <div class="fig"><span class="from">~50%</span><span class="arrow">→</span><span class="to">85%+</span></div>
+          <div class="note">A mastered buyer consult / listing presentation</div>
+        </div>
+      </div>
+      <div class="bench">
+        <div><b>~10%</b> &nbsp;dial → conversation</div>
+        <div><b>6</b> &nbsp;conversations → 1 appointment</div>
+        <div><b>~60</b> &nbsp;reachouts → 1 appointment</div>
+        <div><b>5</b> &nbsp;"no"s before the "yes"</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Three tools, three jobs</h2><p>Keeping the lanes clean is what makes it maintainable.</p></div>
+    <div class="lanes">
+      <div class="lane ghl">
+        <h3><span class="dot"></span>GoHighLevel</h3>
+        <div class="role">Execution engine</div>
+        <ul>
+          <li>Contacts, pipeline stages, custom fields</li>
+          <li>The drip / SMS cadence engine</li>
+          <li>Appointment reminders &amp; confirmations</li>
+          <li>Property-alert triggers, call tasks</li>
+          <li>Mass-email sends</li>
+        </ul>
+      </div>
+      <div class="lane skill">
+        <h3><span class="dot"></span>Claude Skills</h3>
+        <div class="role">On-demand content &amp; decisions</div>
+        <ul>
+          <li>Writes every email, text &amp; script</li>
+          <li>Builds the GHL workflow blueprints</li>
+          <li>Market updates &amp; newsletters</li>
+          <li>Per-contact pre-call briefs</li>
+          <li>QAs your presentations &amp; KPIs</li>
+        </ul>
+      </div>
+      <div class="lane routine">
+        <h3><span class="dot"></span>Claude Routines</h3>
+        <div class="role">Scheduled triggers</div>
+        <ul>
+          <li>Friday "what's happening" email</li>
+          <li>Monthly market update</li>
+          <li>Weekly KPI digest + biggest leak</li>
+          <li>Holiday emails, timed ahead</li>
+          <li>Daily "who to call today" brief</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>The staged rollout</h2><p>Seven phases. Each is shippable on its own.</p></div>
+    <div class="phases">
+
+      <div class="phase">
+        <div class="rail"><div class="node">0</div></div>
+        <div class="card">
+          <div class="top"><h3>Foundation &amp; measurement</h3><span class="when">Week 1</span></div>
+          <p class="goal">You can't lift a ratio you don't track. Stand up the funnel and get a <em>baseline</em>.</p>
+          <div class="rows">
+            <div class="row"><span class="tag ghl">GHL</span><span class="val">Rebuild pipeline to mirror the funnel; add fields: goal, timeline bucket, lead source, family notes.</span></div>
+            <div class="row"><span class="tag skill">Skill</span><span class="val"><code>kpi-definitions</code> — canonical metrics + targets.</span></div>
+            <div class="row"><span class="tag routine">Routine</span><span class="val"><code>weekly-kpi-digest</code> — funnel ratios once the data path is live.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="rail"><div class="node">1</div></div>
+        <div class="card">
+          <div class="top"><h3>CRM as your "technology assistant"</h3><span class="when">Weeks 1–2</span></div>
+          <p class="goal">Automate what can be delegated; let the CRM <em>remind</em> you of what can't.</p>
+          <div class="rows">
+            <div class="row"><span class="tag ghl">GHL</span><span class="val">No-timeframe cadence (day 1 → every other day ×14 → every 21 days ×1yr); timeline buckets; 1000-day drip; 26-day/12-touch post-appointment; past-client every 90 days ×20yr; "Firstname Realtor" sender name.</span></div>
+            <div class="row"><span class="tag skill">Skill</span><span class="val"><code>drip-library-writer</code> + <code>ghl-cadence-blueprint</code>.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="rail"><div class="node">2</div></div>
+        <div class="card">
+          <div class="top"><h3>Property alerts</h3><span class="when">Week 2</span></div>
+          <p class="goal">Beat Zillow for buyers; keep sellers warm without a bait-and-switch AVM.</p>
+          <div class="rows">
+            <div class="row"><span class="tag ghl">GHL</span><span class="val">Buyer instant saved-search alerts; seller weekly "just sold near you" reverse alert.</span></div>
+            <div class="row"><span class="tag skill">Skill</span><span class="val"><code>property-alert-templates</code> — buyer + seller copy.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="rail"><div class="node">3</div></div>
+        <div class="card">
+          <div class="top"><h3>The mass-email engine</h3><span class="when">Weeks 2–3</span></div>
+          <p class="goal">The "newsletter that works like magic." <em>≈5.5 broadcasts / month</em>, mostly not about real estate.</p>
+          <div class="rows">
+            <div class="row"><span class="tag ghl">GHL</span><span class="val">Broadcast lists &amp; send infrastructure for the whole database.</span></div>
+            <div class="row"><span class="tag skill">Skill</span><span class="val"><code>weekly-whats-happening</code> · <code>holiday-email</code> · <code>monthly-market-update</code>.</span></div>
+            <div class="row"><span class="tag routine">Routine</span><span class="val"><code>friday-newsletter</code> · <code>holiday-emails</code> · <code>monthly-market-update</code> — drafted &amp; staged automatically.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="rail"><div class="node">4</div></div>
+        <div class="card">
+          <div class="top"><h3>Phone conversion: scripts, frameworks, mindset</h3><span class="when">Weeks 3–4</span></div>
+          <p class="goal">Appointments get set on the phones. <em>88%</em> go with the first agent they connect with.</p>
+          <div class="rows">
+            <div class="row"><span class="tag ghl">GHL</span><span class="val">Daily call-task list surfaced by the cadence engine; the 8–10am / 4–6pm blocks.</span></div>
+            <div class="row"><span class="tag skill">Skill</span><span class="val"><code>call-script-generator</code> (per lead source) · <code>objection-preframe-library</code> · <code>pre-call-brief</code>.</span></div>
+            <div class="row"><span class="tag routine">Routine</span><span class="val"><code>daily-call-brief</code> — today's list + a prep card per contact.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="rail"><div class="node">5</div></div>
+        <div class="card">
+          <div class="top"><h3>Show-rate &amp; conversion</h3><span class="when">Weeks 4–5</span></div>
+          <p class="goal">Lift the two money ratios directly — the whole point of the build.</p>
+          <div class="rows">
+            <div class="row"><span class="tag ghl">GHL</span><span class="val">Multi-touch appointment-confirmation sequence; pre-appointment "sell the value" email/video.</span></div>
+            <div class="row"><span class="tag skill">Skill</span><span class="val"><code>no-pressure-appointment-script</code> · <code>appointment-confirmation-sequence</code> · <code>presentation-builder-qa</code> · <code>post-appointment-26day</code>.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="rail"><div class="node">6</div></div>
+        <div class="card">
+          <div class="top"><h3>The optimization loop</h3><span class="when">Ongoing</span></div>
+          <p class="goal">Where the 1600% compounds — small hinges, big doors.</p>
+          <div class="rows">
+            <div class="row"><span class="tag routine">Routine</span><span class="val"><code>weekly-kpi-digest</code> names the biggest leak + the one tweak; monthly deeper review adjusts cadences and scripts to what's actually converting.</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>The build catalog</h2><p>What gets created as we work the phases.</p></div>
+    <div class="cat-grid">
+      <div class="cat skill">
+        <h3><span class="dot"></span>Claude Skills · 14</h3>
+        <table>
+          <tr><td><code>kpi-definitions</code></td><td class="desc">Funnel metrics + targets</td><td class="ph">P0</td></tr>
+          <tr><td><code>drip-library-writer</code></td><td class="desc">1000-day email/text library</td><td class="ph">P1</td></tr>
+          <tr><td><code>ghl-cadence-blueprint</code></td><td class="desc">Copy-paste workflow specs</td><td class="ph">P1</td></tr>
+          <tr><td><code>property-alert-templates</code></td><td class="desc">Buyer + seller alert copy</td><td class="ph">P2</td></tr>
+          <tr><td><code>weekly-whats-happening</code></td><td class="desc">Friday local-events email</td><td class="ph">P3</td></tr>
+          <tr><td><code>holiday-email</code></td><td class="desc">7 core holiday emails</td><td class="ph">P3</td></tr>
+          <tr><td><code>monthly-market-update</code></td><td class="desc">Market video script</td><td class="ph">P3</td></tr>
+          <tr><td><code>call-script-generator</code></td><td class="desc">Per-lead-source scripts</td><td class="ph">P4</td></tr>
+          <tr><td><code>pre-call-brief</code></td><td class="desc">Per-contact prep sheet</td><td class="ph">P4</td></tr>
+          <tr><td><code>objection-preframe-library</code></td><td class="desc">Pre-frame + objections</td><td class="ph">P4</td></tr>
+          <tr><td><code>no-pressure-appointment-script</code></td><td class="desc">Comfort/close setting</td><td class="ph">P5</td></tr>
+          <tr><td><code>appointment-confirmation-sequence</code></td><td class="desc">Multi-touch confirm</td><td class="ph">P5</td></tr>
+          <tr><td><code>presentation-builder-qa</code></td><td class="desc">Buyer/listing deck QA</td><td class="ph">P5</td></tr>
+          <tr><td><code>post-appointment-26day</code></td><td class="desc">12-touch non-signed follow-up</td><td class="ph">P5</td></tr>
+        </table>
+      </div>
+      <div class="cat routine">
+        <h3><span class="dot"></span>Claude Routines · 5</h3>
+        <table>
+          <tr><td><code>daily-call-brief</code></td><td class="desc">Weekday call list + prep cards</td><td class="ph">~7am</td></tr>
+          <tr><td><code>friday-newsletter</code></td><td class="desc">Weekend "what's happening" draft</td><td class="ph">Fri 7am</td></tr>
+          <tr><td><code>holiday-emails</code></td><td class="desc">Drafted ahead of each holiday</td><td class="ph">−3 days</td></tr>
+          <tr><td><code>monthly-market-update</code></td><td class="desc">Market update script</td><td class="ph">1st</td></tr>
+          <tr><td><code>weekly-kpi-digest</code></td><td class="desc">Ratios + biggest leak + one tweak</td><td class="ph">Mon 7am</td></tr>
+        </table>
+        <h3 style="border-top:1px solid var(--line);"><span class="dot" style="background:var(--muted);"></span>Stays human — by design</h3>
+        <table>
+          <tr><td class="desc" colspan="3" style="color:var(--ink-soft);">The transcript is explicit: <b>Claude preps you, but you make the calls.</b> The human connection on follow-up is the one thing not to automate.</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>To start building, I need four things</h2></div>
+    <div class="start">
+      <ol>
+        <li><b>GHL connection path</b> — API key (Claude reads funnel data &amp; pushes drafts itself), Zapier/Make bridge, or copy-paste blueprints you build manually.</li>
+        <li><b>Your market &amp; primary lead sources</b> — so scripts and content are tuned to your metro, not Phoenix.</li>
+        <li><b>Your voice</b> — a few existing emails/texts, or I draft fresh in a helpful, no-pressure, local-expert tone for you to edit.</li>
+        <li><b>Where to start</b> — foundation first (Phases 0–1), or the Friday newsletter as a quick win live this week.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>Reference plan: lead-conversion-system/IMPLEMENTATION-PLAN.md · built for bonsrealty.com</footer>
+</div>
