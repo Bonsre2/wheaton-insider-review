@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bons Realty — Potential HVAC Upgrade Option</title>
+<style>
+  :root{
+    --navy:#1c3a5e;
+    --navy-deep:#152c47;
+    --ink:#26303a;
+    --slate:#5b6b7a;
+    --line:#d9dee5;
+    --gray:#f4f6f9;
+    --gray-2:#eaeef3;
+    --accent:#b98a3e; /* restrained brass accent */
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#fff;}
+  body{
+    font-family:'Helvetica Neue','Arial','Liberation Sans',sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    font-size:9.4px;
+    line-height:1.48;
+  }
+  @page{ size:8.5in 11in; margin:0; }
+
+  .page{
+    width:8.5in; height:11in;
+    padding:0.42in 0.5in 0.34in;
+    display:flex; flex-direction:column;
+    position:relative;
+  }
+
+  /* ---------- Masthead ---------- */
+  .mast{ display:flex; align-items:flex-end; justify-content:space-between; padding-bottom:9px; border-bottom:2px solid var(--navy); }
+  .brand{ display:flex; align-items:center; gap:9px; }
+  .brand .logomark{ width:29px; height:29px; }
+  .brand .wordmark{ line-height:1; }
+  .brand .wordmark .name{ font-size:16px; font-weight:800; letter-spacing:.14em; color:var(--navy); text-transform:uppercase; }
+  .brand .wordmark .tag{ font-size:6.6px; font-weight:700; letter-spacing:.34em; color:var(--slate); text-transform:uppercase; margin-top:2.5px; }
+  .mast .kicker{ text-align:right; }
+  .mast .kicker .lbl{ font-size:6.8px; font-weight:700; letter-spacing:.26em; color:var(--slate); text-transform:uppercase; }
+  .mast .kicker .doc{ font-size:8.2px; font-weight:600; color:var(--navy); margin-top:2px; }
+
+  /* ---------- Title band ---------- */
+  .titleband{ background:var(--navy); color:#fff; border-radius:5px; padding:16px 18px; margin-top:13px; position:relative; overflow:hidden; }
+  .titleband::after{ content:""; position:absolute; right:-40px; top:-40px; width:150px; height:150px; border:14px solid rgba(255,255,255,.05); border-radius:50%; }
+  .titleband .eyebrow{ font-size:6.8px; font-weight:700; letter-spacing:.28em; text-transform:uppercase; color:#a9c2dc; }
+  .titleband h1{ font-size:20px; font-weight:800; letter-spacing:-.01em; line-height:1.12; margin-top:6px; }
+  .titleband .sub{ font-size:9.6px; font-weight:500; color:#d5e2ef; margin-top:5px; max-width:86%; }
+
+  /* ---------- Columns ---------- */
+  .body{ display:grid; grid-template-columns:1fr 2.02in; gap:15px; margin-top:17px; }
+  h2.sec{ font-size:11px; font-weight:800; color:var(--navy); letter-spacing:.005em; display:flex; align-items:center; gap:7px; }
+  h2.sec::before{ content:""; width:13px; height:2.5px; background:var(--accent); border-radius:2px; display:inline-block; }
+  .lead{ margin-top:6px; color:var(--ink); }
+  .lead strong{ color:var(--navy); font-weight:700; }
+
+  /* Benefits */
+  .benefits{ margin-top:15px; display:grid; grid-template-columns:1fr 1fr; gap:13px 14px; }
+  .benefit{ display:flex; gap:8px; align-items:flex-start; }
+  .benefit .ic{ flex:0 0 auto; width:23px; height:23px; border-radius:6px; background:var(--gray); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+  .benefit .ic svg{ width:14px; height:14px; }
+  .benefit .txt b{ display:block; font-size:9px; font-weight:700; color:var(--navy); line-height:1.25; }
+  .benefit .txt span{ display:block; color:var(--slate); font-size:8.3px; line-height:1.35; margin-top:1px; }
+
+  /* Sidebar */
+  .aside{ display:flex; flex-direction:column; gap:10px; }
+  .figure{ background:var(--gray); border:1px solid var(--line); border-radius:6px; padding:9px 10px 8px; }
+  .figure .cap{ font-size:7px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); margin-top:6px; text-align:center; }
+  .figure.sys{ padding-bottom:9px; }
+  .figrow{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .figrow .figure{ padding:8px 6px 7px; }
+  .figrow .figure svg{ display:block; margin:0 auto; }
+
+  /* ---------- Cost table ---------- */
+  .costs{ margin-top:22px; }
+  table{ width:100%; border-collapse:collapse; margin-top:7px; font-size:9px; border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+  thead th{ background:var(--navy); color:#fff; text-align:left; font-weight:700; padding:6.5px 11px; font-size:8.3px; letter-spacing:.04em; text-transform:uppercase; }
+  thead th.num{ text-align:right; }
+  tbody td{ padding:8.5px 11px; border-top:1px solid var(--line); color:var(--ink); }
+  tbody tr:nth-child(even){ background:var(--gray); }
+  tbody td.z{ font-weight:700; color:var(--navy); }
+  tbody td.desc{ color:var(--slate); font-size:8.4px; }
+  tbody td.num{ text-align:right; font-weight:700; color:var(--navy); font-variant-numeric:tabular-nums; }
+  .costnote{ font-size:7.6px; color:var(--slate); margin-top:5px; font-style:italic; }
+
+  /* ---------- Manufacturers ---------- */
+  .mfg{ margin-top:22px; }
+  .mfg-grid{ margin-top:7px; display:grid; grid-template-columns:repeat(4,1fr); gap:9px; }
+  .mfg-card{ border:1px solid var(--line); border-radius:6px; padding:8px 6px 7px; text-align:center; background:#fff; }
+  .mfg-card .qr{ width:58px; height:58px; margin:0 auto; display:block; }
+  .mfg-card .mname{ font-size:8.6px; font-weight:700; color:var(--navy); margin-top:6px; line-height:1.15; }
+  .mfg-card .murl{ font-size:6.9px; color:var(--slate); margin-top:2px; word-break:break-all; line-height:1.2; }
+  .mfg-hint{ font-size:7.4px; color:var(--slate); margin-top:6px; text-align:center; }
+
+  /* ---------- Footer ---------- */
+  .foot{ margin-top:auto; padding-top:9px; }
+  .disclaimer{ background:var(--gray); border:1px solid var(--line); border-left:3px solid var(--navy); border-radius:5px; padding:7px 10px; }
+  .disclaimer .dh{ font-size:6.8px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--navy); margin-bottom:2px; }
+  .disclaimer p{ font-size:7px; color:var(--slate); line-height:1.42; }
+  .refs{ margin-top:7px; display:grid; grid-template-columns:1fr 1fr; gap:2px 16px; }
+  .refs .rh{ grid-column:1 / -1; font-size:6.6px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--slate); margin-bottom:1px; }
+  .refs li{ list-style:none; font-size:6.7px; color:var(--slate); line-height:1.38; padding-left:9px; text-indent:-9px; }
+  .colophon{ margin-top:8px; display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--line); padding-top:6px; }
+  .colophon .c-brand{ font-size:7.4px; color:var(--slate); }
+  .colophon .c-brand b{ color:var(--navy); font-weight:800; letter-spacing:.06em; }
+  .colophon .c-meta{ font-size:6.8px; color:var(--slate); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Masthead -->
+  <div class="mast">
+    <div class="brand">
+      <svg class="logomark" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="3" width="94" height="94" rx="14" fill="#1c3a5e"/>
+        <path d="M50 24 L74 43 V72 H60 V56 H40 V72 H26 V43 Z" fill="#fff"/>
+        <rect x="46" y="60" width="8" height="12" fill="#1c3a5e"/>
+      </svg>
+      <div class="wordmark">
+        <div class="name">Bons Realty</div>
+        <div class="tag">Trusted Local Guidance</div>
+      </div>
+    </div>
+    <div class="kicker">
+      <div class="lbl">Listing Packet · Homeowner Resource</div>
+      <div class="doc">Property Improvement Brief</div>
+    </div>
+  </div>
+
+  <!-- Title band -->
+  <div class="titleband">
+    <div class="eyebrow">Heating &amp; Cooling · Educational Overview</div>
+    <h1>Potential HVAC Upgrade Option for This Home</h1>
+    <div class="sub">Efficient whole-home heating and cooling &mdash; without existing ductwork.</div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+    <!-- Main column -->
+    <div class="main">
+      <h2 class="sec">Considering Central Air?</h2>
+      <p class="lead">
+        Homes without existing ductwork can be difficult and costly to fit for traditional central air.
+        A <strong>ductless mini-split system</strong> <em>may</em> offer an alternative worth exploring. A mini-split
+        pairs one compact outdoor unit with one or more slim indoor units, delivering both
+        <strong>heating and cooling</strong> year-round. Because refrigerant lines run through a small opening rather
+        than bulky ducts, <strong>no existing ductwork is required</strong>&mdash;which can make it a practical
+        consideration for older homes. Whether it is the right fit here depends on the property and should be
+        confirmed by a licensed contractor.
+      </p>
+
+      <div class="benefits">
+        <!-- 1 no ductwork -->
+        <div class="benefit">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1c3a5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/><line x1="3.5" y1="20.5" x2="20.5" y2="3.5" stroke="#b98a3e"/></svg>
+          </div>
+          <div class="txt"><b>No Existing Ductwork Needed</b><span>Installs where ducts don&rsquo;t exist or aren&rsquo;t practical.</span></div>
+        </div>
+        <!-- 2 minimal disruption -->
+        <div class="benefit">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1c3a5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L4 16.8 7.2 20l5.3-5.3a4 4 0 0 0 5.2-5.4l-2.4 2.4-2.1-.6-.6-2.1z"/></svg>
+          </div>
+          <div class="txt"><b>Minimal Disruption</b><span>Typically installed in a day or two with little demolition.</span></div>
+        </div>
+        <!-- 3 energy efficient -->
+        <div class="benefit">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1c3a5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12z" fill="none" stroke="#b98a3e"/></svg>
+          </div>
+          <div class="txt"><b>Energy Efficient</b><span>Inverter heat-pump technology can lower energy use.</span></div>
+        </div>
+        <!-- 4 quiet -->
+        <div class="benefit">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1c3a5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9.5a4 4 0 0 1 0 5" stroke="#b98a3e"/></svg>
+          </div>
+          <div class="txt"><b>Quiet Operation</b><span>Indoor units run softly&mdash;often near a whisper.</span></div>
+        </div>
+        <!-- 5 room control -->
+        <div class="benefit">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1c3a5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="6" x2="19" y2="6"/><circle cx="9" cy="6" r="2.2" fill="#fff"/><line x1="5" y1="12" x2="19" y2="12"/><circle cx="15" cy="12" r="2.2" fill="#fff" stroke="#b98a3e"/><line x1="5" y1="18" x2="19" y2="18"/><circle cx="11" cy="18" r="2.2" fill="#fff"/></svg>
+          </div>
+          <div class="txt"><b>Individual Room Control</b><span>Set each zone&rsquo;s temperature independently.</span></div>
+        </div>
+        <!-- 6 retrofit ranch -->
+        <div class="benefit">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1c3a5e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12l10-6 10 6"/><path d="M4 11v8h16v-8"/><rect x="9.5" y="13.5" width="5" height="5.5" stroke="#b98a3e"/></svg>
+          </div>
+          <div class="txt"><b>Great Retrofit for Ranch Homes</b><span>Often an excellent fit for older single-story layouts.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="aside">
+      <div class="figrow">
+        <div class="figure">
+          <!-- Outdoor condenser -->
+          <svg width="70" height="58" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="14" y="16" width="92" height="62" rx="5" fill="#eef2f7" stroke="#1c3a5e" stroke-width="2.4"/>
+            <rect x="14" y="16" width="92" height="13" rx="5" fill="#1c3a5e"/>
+            <circle cx="60" cy="50" r="20" fill="#fff" stroke="#1c3a5e" stroke-width="2.4"/>
+            <circle cx="60" cy="50" r="4" fill="#1c3a5e"/>
+            <path d="M60 50 L60 33 M60 50 L74 58 M60 50 L46 58" stroke="#b98a3e" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M88 40 h10 M88 47 h10 M88 54 h10 M88 61 h10" stroke="#9fb0c2" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M26 78 v10 M94 78 v10" stroke="#1c3a5e" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+          <div class="cap">Outdoor Condenser</div>
+        </div>
+        <div class="figure">
+          <!-- Indoor wall unit -->
+          <svg width="70" height="58" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="8" y1="30" x2="112" y2="30" stroke="#c7d0da" stroke-width="2"/>
+            <rect x="16" y="34" width="88" height="26" rx="10" fill="#fff" stroke="#1c3a5e" stroke-width="2.4"/>
+            <rect x="16" y="34" width="88" height="9" rx="9" fill="#eef2f7"/>
+            <path d="M26 55 q6 8 12 0 M46 55 q6 8 12 0 M66 55 q6 8 12 0 M86 55 q6 8 0 0" stroke="#b98a3e" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <line x1="30" y1="47" x2="90" y2="47" stroke="#9fb0c2" stroke-width="1.6"/>
+            <circle cx="95" cy="47" r="1.6" fill="#1c3a5e"/>
+          </svg>
+          <div class="cap">Indoor Wall Unit</div>
+        </div>
+      </div>
+
+      <div class="figure sys">
+        <!-- System diagram: one outdoor -> multiple indoor -->
+        <svg width="100%" height="118" viewBox="0 0 220 150" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <!-- house outline -->
+          <path d="M12 66 L110 18 L208 66" stroke="#c7d0da" stroke-width="2" fill="none"/>
+          <rect x="20" y="66" width="180" height="74" rx="4" fill="#f8fafc" stroke="#c7d0da" stroke-width="1.6"/>
+          <line x1="110" y1="66" x2="110" y2="140" stroke="#e3e8ee" stroke-width="1.4"/>
+          <line x1="65" y1="103" x2="110" y2="103" stroke="#e3e8ee" stroke-width="1.4"/>
+          <!-- outdoor unit -->
+          <rect x="176" y="112" width="34" height="26" rx="3" fill="#1c3a5e"/>
+          <circle cx="193" cy="125" r="8" fill="none" stroke="#fff" stroke-width="1.8"/>
+          <circle cx="193" cy="125" r="1.6" fill="#fff"/>
+          <text x="193" y="149" font-family="Helvetica,Arial" font-size="8" fill="#5b6b7a" text-anchor="middle">1 Outdoor</text>
+          <!-- indoor heads -->
+          <g fill="#fff" stroke="#1c3a5e" stroke-width="1.8">
+            <rect x="34" y="78" width="30" height="9" rx="4.5"/>
+            <rect x="120" y="78" width="30" height="9" rx="4.5"/>
+            <rect x="34" y="115" width="30" height="9" rx="4.5"/>
+          </g>
+          <!-- refrigerant lines -->
+          <path d="M176 120 C120 120 92 96 64 87" stroke="#b98a3e" stroke-width="1.8" fill="none"/>
+          <path d="M176 122 C150 118 150 96 135 87" stroke="#b98a3e" stroke-width="1.8" fill="none"/>
+          <path d="M176 126 C120 150 92 128 64 122" stroke="#b98a3e" stroke-width="1.8" fill="none"/>
+          <circle cx="49" cy="82" r="1.7" fill="#b98a3e"/><circle cx="135" cy="82" r="1.7" fill="#b98a3e"/><circle cx="49" cy="119" r="1.7" fill="#b98a3e"/>
+        </svg>
+        <div class="cap">One Outdoor Unit · Multiple Indoor Zones</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Costs -->
+  <div class="costs">
+    <h2 class="sec">Typical Installed Costs &mdash; Chicago Area</h2>
+    <table>
+      <thead>
+        <tr><th style="width:22%">Configuration</th><th>What It Commonly Serves</th><th class="num" style="width:26%">Typical Installed Range</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="z">Single Zone</td><td class="desc">One room or open area &mdash; e.g., a primary bedroom or living room</td><td class="num">$2,500 &ndash; $7,000</td></tr>
+        <tr><td class="z">Three Zones</td><td class="desc">Several rooms on one system &mdash; common for a small home or main level</td><td class="num">$7,000 &ndash; $12,000</td></tr>
+        <tr><td class="z">Four Zones</td><td class="desc">Whole-home coverage across four separate areas</td><td class="num">$9,000 &ndash; $18,000</td></tr>
+      </tbody>
+    </table>
+    <div class="costnote">Pricing varies with equipment brand, efficiency (SEER2), line-set length, electrical work, permits, and site conditions. Figures are general estimates for illustration only, not a quote.</div>
+  </div>
+
+  <!-- Manufacturers -->
+  <div class="mfg">
+    <h2 class="sec">Popular Manufacturers</h2>
+    <div class="mfg-grid">
+      <div class="mfg-card">
+        <img class="qr" src="assets/qr_mitsubishi.svg" alt="Mitsubishi Electric QR code">
+        <div class="mname">Mitsubishi Electric</div>
+        <div class="murl">mitsubishicomfort.com</div>
+      </div>
+      <div class="mfg-card">
+        <img class="qr" src="assets/qr_daikin.svg" alt="Daikin QR code">
+        <div class="mname">Daikin</div>
+        <div class="murl">daikincomfort.com</div>
+      </div>
+      <div class="mfg-card">
+        <img class="qr" src="assets/qr_fujitsu.svg" alt="Fujitsu QR code">
+        <div class="mname">Fujitsu (AIRSTAGE)</div>
+        <div class="murl">fujitsugeneral.com/us</div>
+      </div>
+      <div class="mfg-card">
+        <img class="qr" src="assets/qr_lg.svg" alt="LG QR code">
+        <div class="mname">LG</div>
+        <div class="murl">lg.com/us/residential-hvac</div>
+      </div>
+    </div>
+    <div class="mfg-hint">Scan a code to explore each manufacturer&rsquo;s official ductless line-up. Listed alphabetically by category; not an endorsement.</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="foot">
+    <div class="disclaimer">
+      <div class="dh">Important Disclaimer</div>
+      <p>This information is provided solely for general educational purposes to illustrate one potential HVAC upgrade option. Bons Realty and its agents are not licensed HVAC contractors and make no representation or warranty regarding suitability, installation feasibility, costs, savings, permits, or code compliance. Buyers should obtain an independent evaluation and written estimate from a qualified, licensed HVAC contractor.</p>
+    </div>
+
+    <ul class="refs">
+      <li class="rh">Sources &amp; References</li>
+      <li>1. U.S. Dept. of Energy, &ldquo;Ductless Mini-Split Heat Pumps,&rdquo; energy.gov &mdash; system operation, efficiency, and zoning.</li>
+      <li>2. EnergySage, &ldquo;How Much Does a Mini-Split Cost?&rdquo; (2025) &mdash; single-zone installed-cost ranges.</li>
+      <li>3. HomeGuide &amp; Angi mini-split cost guides (2025&ndash;2026) &mdash; multi-zone installed-cost ranges.</li>
+      <li>4. Carrier / manufacturer cost guides &mdash; per-zone pricing and installation factors.</li>
+      <li>5. Manufacturer sites: mitsubishicomfort.com, daikincomfort.com, fujitsugeneral.com, lg.com.</li>
+      <li>6. ENERGY STAR, &ldquo;Ductless Heating &amp; Cooling,&rdquo; energystar.gov &mdash; efficiency &amp; comfort benefits.</li>
+    </ul>
+
+    <div class="colophon">
+      <div class="c-brand"><b>BONS REALTY</b> &nbsp;·&nbsp; sean@bonsrealty.com</div>
+      <div class="c-meta">Educational homeowner resource · Not an offer, appraisal, or contractor estimate · Rev. 2026</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
