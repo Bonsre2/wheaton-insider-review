@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Western Suburban Insider — Article Review</title>
+  <title>West Suburban Insider — Article Review</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -122,12 +122,31 @@
     .btn-submit-tip:hover { background: #d97706; }
     .btn-submit-tip:disabled { background: #fcd34d; cursor: default; }
     .tip-badge { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: #fef3c7; color: #92400e; text-transform: uppercase; letter-spacing: 0.04em; }
+  
+    /* Fact-check gate (2026-09-02) */
+    .fc-badge{font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:10px;cursor:pointer;white-space:nowrap}
+    .fc-pass{background:#d1fae5;color:#059669}
+    .fc-override{background:#d1fae5;color:#065f46;border:1px dashed #059669}
+    .fc-warn{background:#fef3c7;color:#92400e}
+    .fc-fail{background:#fee2e2;color:#dc2626}
+    .fc-error{background:#fde8d7;color:#b45309}
+    .fc-unchecked{background:#f3f4f6;color:#6b7280;cursor:default}
+    .fc-panel{display:none;padding:10px 16px;background:#fbfaf7;border-bottom:1px solid #eee;font-size:.82rem}
+    .fc-panel.open{display:block}
+    .fc-summary{font-weight:600;margin-bottom:8px}
+    .fc-claim{display:flex;gap:8px;padding:4px 0;border-top:1px dashed #e8e6e0}
+    .fc-ic{font-weight:700;flex-shrink:0}
+    .fc-v-supported .fc-ic{color:#059669}
+    .fc-v-contradicted .fc-ic{color:#dc2626}
+    .fc-v-not_in_source .fc-ic{color:#b45309}
+    .fc-src{color:#888;font-size:.75rem}
+    .fc-override-btn{margin-top:10px;background:#fff;border:1px solid #d97706;color:#92400e;border-radius:6px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:.8rem}
   </style>
 </head>
 <body>
   <header>
     <div class="header-left">
-      <h1>🏘️ Western Suburban Insider</h1>
+      <h1>🏘️ West Suburban Insider</h1>
       <p>Weekly Article Review — Bons Realty</p>
     </div>
     <div id="week-label" style="font-size:0.85rem;opacity:0.7;"></div>
@@ -236,8 +255,10 @@
         <span class="category-badge" style="background:#1c3a5e;color:#fff">📍 ${p.town || 'Wheaton'}</span>
         <span class="category-badge">${CATEGORY_LABELS[p.category] || p.category}</span>
         ${p.notes && p.notes.includes('Community tip') ? '<span class="tip-badge">💡 Tip</span>' : ''}
+        ${fcBadge(p)}
       </div>
     </div>
+    ${fcPanel(p)}
     <div class="card-body">
       <div class="photo-side">
         <div class="photo-area ${p.photo_url ? 'has-photo' : ''}" onclick="document.getElementById('photo-input-${p.id}').click()">
@@ -318,6 +339,47 @@
   </div>`;
     }
 
+    // ---- Fact-check gate (2026-09-02). Verdicts are written by the scheduled checker on the
+    // mini PC; only 'pass' or 'override' articles publish. Editing any content field clears the
+    // verdict so the next sweep re-checks it.
+    const FC_LABELS = { pass:'✓ Facts verified', warn:'⚠ Unverified claims', fail:'✗ Contradicts source', error:'⚠ Source unreachable', override:'✓ Override (yours)' };
+    const FC_CONTENT_FIELDS = ['headline','summary','why_it_matters','social_caption','source_url'];
+
+    function fcBadge(p) {
+      const st = p.fact_check_status;
+      if (!st) return '<span class="fc-badge fc-unchecked" title="The fact checker has not reviewed this version yet. Unchecked articles do not publish.">⏳ Fact check pending</span>';
+      return `<span class="fc-badge fc-${st}" onclick="toggleFC('${p.id}')" title="Click for details">${FC_LABELS[st] || st}</span>`;
+    }
+
+    function fcPanel(p) {
+      if (!p.fact_check) return '';
+      const claims = (p.fact_check.claims || []).map(c => `
+        <div class="fc-claim fc-v-${c.verdict}">
+          <span class="fc-ic">${c.verdict === 'supported' ? '✓' : c.verdict === 'contradicted' ? '✗' : '?'}</span>
+          <div><div>${escHtml(c.claim)}</div>${c.source_says ? `<div class="fc-src">source: ${escHtml(c.source_says)}</div>` : ''}</div>
+        </div>`).join('');
+      const needsOverride = p.fact_check_status && !['pass','override'].includes(p.fact_check_status);
+      return `<div class="fc-panel" id="fc-panel-${p.id}">
+        <div class="fc-summary">${escHtml(p.fact_check.summary || '')}</div>${claims}
+        ${needsOverride ? `<button class="fc-override-btn" onclick="overrideFC('${p.id}')">I checked it myself — publish anyway</button>` : ''}
+      </div>`;
+    }
+
+    function toggleFC(id) {
+      const el = document.getElementById('fc-panel-' + id);
+      if (el) el.classList.toggle('open');
+    }
+
+    async function overrideFC(id) {
+      const { error } = await sb.from('wheaton_insider_proposals')
+        .update({ fact_check_status: 'override', publish_blocked_reason: null }).eq('id', id);
+      if (error) { showToast('Override failed: ' + error.message, true); return; }
+      const p = proposals.find(x => x.id == id);
+      if (p) p.fact_check_status = 'override';
+      renderCards();
+      showToast('✓ Override recorded — this article can publish');
+    }
+
     function attachCardListeners() {
       document.querySelectorAll('.field-input').forEach(input => {
         input.addEventListener('change', () => saveField(input.dataset.id, input.dataset.field, input.value));
@@ -335,9 +397,17 @@
       if (!p || p[field] === value) return;
       p[field] = value;
       const newStatus = (p.status === 'approved') ? 'edited' : p.status;
-      const { error } = await sb.from('wheaton_insider_proposals').update({ [field]: value, status: newStatus }).eq('id', id);
+      const patch = { [field]: value, status: newStatus };
+      if (FC_CONTENT_FIELDS.includes(field)) {
+        // content changed -> the old verdict no longer applies; the checker re-runs on its next sweep
+        patch.fact_check_status = null;
+        patch.fact_check_hash = null;
+        patch.publish_blocked_reason = null;
+      }
+      const { error } = await sb.from('wheaton_insider_proposals').update(patch).eq('id', id);
       if (error) { showToast('Save failed', true); return; }
       p.status = newStatus;
+      if (FC_CONTENT_FIELDS.includes(field)) { p.fact_check_status = null; renderCards(); }
       showSaveIndicator(id);
       updateStats();
     }
